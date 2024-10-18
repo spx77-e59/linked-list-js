@@ -10,7 +10,3 @@ list.append("snake");
 list.prepend("turtle");
 
 console.log(list.toString());
-console.log(list.removeAt(1));
-console.log(list.toString());
-// expected output
-// ( dog ) -> ( cat ) -> ( parrot ) -> ( hamster ) -> ( snake ) -> ( turtle ) -> null

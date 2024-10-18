@@ -2,44 +2,41 @@ import Node from "./Node.mjs";
 
 export default class LinkedList {
   constructor() {
-    this.headNode = new Node("Head");
+    this.headNode = new Node();
   }
 
   append(value) {
-    let isEnd = false;
     let node = this.headNode;
     const newNode = new Node(value);
-    while (!isEnd) {
-      if (node.nextNode === null) {
-        node.nextNode = newNode;
-        isEnd = true;
-      }
+
+    while (node.nextNode) {
       node = node.nextNode;
     }
+
+    node.nextNode = newNode;
+
+    return newNode;
   }
 
   prepend(value) {
     const newNode = new Node(value);
-    if (this.headNode.nextNode === null) {
-      this.headNode.nextNode = newNode;
-    }
-    let temp = this.headNode.nextNode;
-    newNode.nextNode = temp;
+
+    newNode.nextNode = this.headNode.nextNode;
     this.headNode.nextNode = newNode;
+
+    return newNode;
   }
 
   size() {
-    let isEnd = false;
-    let length = 0;
+    let size = 0;
     let node = this.headNode.nextNode;
-    while (!isEnd) {
-      length += 1;
-      if (node.nextNode === null) {
-        isEnd = true;
-      }
+
+    while (node) {
+      size += 1;
       node = node.nextNode;
     }
-    return length;
+
+    return size;
   }
 
   head() {
@@ -47,99 +44,95 @@ export default class LinkedList {
   }
 
   tail() {
-    let isEnd = false;
     let node = this.headNode;
-    while (!isEnd) {
-      if (node.nextNode === null) {
-        isEnd = true;
-        break;
-      }
+
+    while (node.nextNode) {
       node = node.nextNode;
     }
+
     return node;
   }
 
   at(index) {
-    let isEnd = false;
-    let length = 0;
-    if (this.headNode.nextNode === 0) {
-      return undefined;
-    }
+    let size = 0;
     let node = this.headNode.nextNode;
-    while (!isEnd) {
-      if (length === index) {
-        isEnd = true;
-        break;
+
+    while (node) {
+      if (size === index) {
+        return node;
       }
-      if (!node.nextNode) {
-        return undefined;
-      }
-      length += 1;
+
+      size += 1;
       node = node.nextNode;
     }
-    return node;
+
+    return undefined;
   }
 
   pop() {
-    let isEnd = false;
+    if (this.headNode.nextNode === null) {
+      return undefined;
+    }
+
     let node = this.headNode;
     let prevNode = null;
-    while (!isEnd) {
-      if (node.nextNode === null) {
-        isEnd = true;
-        prevNode.nextNode = null;
-        break;
-      }
+
+    while (node.nextNode) {
       prevNode = node;
       node = node.nextNode;
     }
+
+    if (prevNode) {
+      prevNode.nextNode = null;
+    }
+
     return node;
   }
 
   contains(value) {
-    let doesContain = false;
     let node = this.headNode;
-    while (!doesContain) {
+
+    while (node) {
       if (node.value === value) {
-        doesContain = true;
-        return doesContain;
+        return true;
       }
-      if (node.nextNode === null) {
-        return false;
-      }
+
       node = node.nextNode;
     }
+
+    return false;
   }
 
   find(value) {
-    let isFound = false;
     let index = 0;
     let node = this.headNode.nextNode;
-    while (!isFound) {
+
+    while (node) {
       if (node.value === value) {
-        isFound = true;
         return index;
       }
-      if (node.nextNode === null) {
-        return undefined;
-      }
+
       index += 1;
       node = node.nextNode;
     }
+
+    return undefined;
   }
 
   toString() {
     let node = this.headNode.nextNode;
+    const parts = [];
+
     if (!node) {
-      return null;
+      return "()";
     }
-    let string = "(" + node.value + ")";
-    while (node.nextNode) {
+
+    while (node) {
+      parts.push(`(${node.value})`);
       node = node.nextNode;
-      string += " -> (" + node.value + ")";
     }
-    string += " -> " + null;
-    return string;
+
+    return parts.join(" ->");
   }
 
   insertAt(value, index) {
@@ -147,11 +140,18 @@ export default class LinkedList {
       return undefined;
     }
 
+    const newNode = new Node(value);
+
+    if (index === 0) {
+      newNode.nextNode = this.headNode.nextNode;
+      this.headNode.nextNode = newNode;
+      return true;
+    }
+
     let length = 0;
     let node = this.headNode;
-    let newNode = new Node(value);
-    let isEnd = false;
-    while (!isEnd) {
+
+    while (node) {
       if (length === index) {
         newNode.nextNode = node.nextNode;
         node.nextNode = newNode;
@@ -160,45 +160,32 @@ export default class LinkedList {
 
       length += 1;
       node = node.nextNode;
-      if (!node.nextNode) {
-        isEnd = true;
-        if (index === length) {
-          newNode.nextNode = null;
-          node.nextNode = newNode;
-          return;
-        }
-      }
     }
+
+    return undefined;
   }
 
   removeAt(index) {
     if (index < 0) {
       return undefined;
     }
+
     let length = 0;
     let prevNode = this.headNode;
     let node = this.headNode.nextNode;
-    let isEnd = false;
-    while (!isEnd) {
+
+    while (node) {
       if (length === index) {
-        let temp = node.nextNode;
-        prevNode.nextNode = temp;
+        prevNode.nextNode = node.nextNode;
         node.nextNode = null;
-        return;
+        return node;
       }
 
       length += 1;
       prevNode = node;
       node = node.nextNode;
-      if (!node.nextNode) {
-        isEnd = true;
-        if (index === length) {
-          let temp = node.nextNode;
-          prevNode.nextNode = temp;
-          node.nextNode = null;
-          return;
-        }
-      }
     }
+
+    return undefined;
   }
 }
